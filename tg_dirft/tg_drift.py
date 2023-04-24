@@ -61,10 +61,20 @@ def run_all_plan():
             match = re.search(r'^Plan: (\d+) to add, (\d+) to change, (\d+) to destroy', line)
             if match:
                 current_plan += 1
+    return plans
 
-    print(plans)
+def check_for_drift(plans):
+    for i, plan in enumerate(plans):
+        print(plan)
+        if plan['add'] != 0 or plan['change'] != 0 or plan['destroy'] != 0:
+            logging.info(f"Drift detected")
+            for resource, action in plan['resources'].items():
+                logging.info(f"resource '{resource} will be '{action}'")
 
-run_all_plan()
+
+while True:
+    plans = run_all_plan()
+    check_for_drift(plans)
 
 
 
